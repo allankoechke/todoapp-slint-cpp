@@ -1,0 +1,90 @@
+import { ListView, AboutSlint } from "std-widgets.slint";
+import { CheckBox, ButtonIcon, TodoItem, TextField } from "widgets.slint";
+
+struct TodoData {
+    completed: bool,
+    task: string
+}
+
+export component AppWindow inherits Window {
+    width: 600px;
+    height: 700px;
+    background: white;
+
+    in property <[TodoData]> todo-model;
+
+    callback add-task <=> task-create.add-task;
+    callback remove-task(int);
+
+    infoPopup := PopupWindow {
+        width: root.width;
+        height: root.height;
+
+        Rectangle {
+            background: Colors.rgba(0,0,0,0.4);
+
+            Rectangle {
+                border-radius: 8px;
+                width: 300px;
+                height: 200px;
+                background: white;
+
+                AboutSlint {}
+            }
+        }
+    }
+
+    VerticalLayout {
+        spacing: 10px;
+
+        Rectangle {
+            height: 60px;
+            background: white;
+            drop-shadow-color: black;
+            drop-shadow-offset-y: 0px;
+            drop-shadow-blur: 4px;
+
+            HorizontalLayout {
+                padding-left: 16px;
+
+                Text {
+                    text: "Todo App";
+                    font-size: 18px;
+                    font-weight: 700;
+                    color: #444;
+                    vertical-alignment: center;
+                }
+
+                ButtonIcon {
+                    commands: "M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336l24 0 0-64-24 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l48 0c13.3 0 24 10.7 24 24l0 88 8 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-80 0c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z";
+                    height: parent.height;
+                    border-radius: 0;
+                    background: self.has-hover ? #ccc : transparent;
+                    fill: gray;
+
+                    clicked => { infoPopup.show(); }
+                }
+            }
+        }
+
+        ListView {
+            for todo[ind] in todo-model: TodoItem {
+                index: ind;
+                task: todo.task;
+                done: todo.completed;
+
+                remove-task => { root.remove-task(ind); }
+            }
+        }
+
+        Rectangle {
+            height: 60px;
+            background: white;
+            drop-shadow-blur: 8px;
+            drop-shadow-color: grey;
+            drop-shadow-offset-y: 1px;
+
+            task-create := TextField {}
+        }
+    }
+}

@@ -1,0 +1,198 @@
+// Todo App Widgets
+
+export component CheckBox inherits Rectangle {
+    width: 40px;
+    height: 40px;
+
+    // Property to hold check button's state
+    in-out property<bool> checked: false;
+
+    // Catch mouse area events
+    ta := TouchArea {
+        clicked => { checked = !checked; }
+    }
+
+    // Display path [ ] or [*]
+    Path {
+        width: 24px;
+        height: 24px;
+        commands: !root.checked ? "M384 80c8.8 0 16 7.2 16 16l0 320c0 8.8-7.2 16-16 16L64 432c-8.8 0-16-7.2-16-16L48 96c0-8.8 7.2-16 16-16l320 0zM64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-320c0-35.3-28.7-64-64-64L64 32z" 
+        : "M64 80c-8.8 0-16 7.2-16 16l0 320c0 8.8 7.2 16 16 16l320 0c8.8 0 16-7.2 16-16l0-320c0-8.8-7.2-16-16-16L64 80zM0 96C0 60.7 28.7 32 64 32l320 0c35.3 0 64 28.7 64 64l0 320c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96zM337 209L209 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L303 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z";
+        fill: #444;
+    }
+}
+
+export component ButtonIcon inherits Rectangle {
+    height: 40px;
+    width: self.height;
+    background: btn.has-hover ? #e7b6b6 : transparent;
+    border-radius: self.height/2;
+
+    // Animate background
+    animate background { duration: 200ms; easing: ease-in-out-quad;}
+
+    // Property
+    out property <bool> has-hover <=> btn.has-hover;
+    in property <string> commands: "M170.5 51.6L151.5 80l145 0-19-28.4c-1.5-2.2-4-3.6-6.7-3.6l-93.7 0c-2.7 0-5.2 1.3-6.7 3.6zm147-26.6L354.2 80 368 80l48 0 8 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-8 0 0 304c0 44.2-35.8 80-80 80l-224 0c-44.2 0-80-35.8-80-80l0-304-8 0c-13.3 0-24-10.7-24-24S10.7 80 24 80l8 0 48 0 13.8 0 36.7-55.1C140.9 9.4 158.4 0 177.1 0l93.7 0c18.7 0 36.2 9.4 46.6 24.9zM80 128l0 304c0 17.7 14.3 32 32 32l224 0c17.7 0 32-14.3 32-32l0-304L80 128zm80 64l0 208c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-208c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0l0 208c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-208c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0l0 208c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-208c0-8.8 7.2-16 16-16s16 7.2 16 16z";
+    in property <color> fill: path.fill;
+    
+    // Callback
+    callback clicked <=> btn.clicked;
+
+    // Touch area
+    btn := TouchArea {}
+
+    // 
+    path := Path {
+        width: btn.pressed ? parent.height * 0.3 : parent.height * 0.5;
+        height: self.width;
+        fill: #2a2a2a;
+        commands: root.commands;
+        y: (parent.height - self.height)/2;
+
+        animate width { duration: 200ms; easing: ease-in-out-bounce; }
+        animate height { duration: 200ms; easing: ease-in-out-bounce; }
+    }
+}
+
+export component TodoItem inherits Rectangle {
+    height: 50px;
+    background: ta.has-hover || remove-btn.has-hover ? #eee : transparent;
+
+    // Properties
+    in-out property <string> task <=> label.text;
+    in-out property <bool> done <=> cb.checked;
+    in property <length> spacing: 0px;
+    in property <int> index: 0;
+
+    // Callbacks
+    callback checked-changed(bool);
+    callback remove-task <=> remove-btn.clicked;
+
+    // Add separator lines after every delegate item
+    // and before them if it's the first on the list
+    Rectangle { height: 1px; width: parent.width; y: 0; visible: index==0; background: silver; }
+    Rectangle { height: 1px; width: parent.width; y: parent.height - self.height; background: silver; }
+
+    ta := TouchArea { }
+
+    HorizontalLayout {
+        height: parent.height;
+        padding-left: 8px;
+        padding-right: 8px;
+        spacing: 8px;
+
+        // Checkbox to mark done projects
+        cb := CheckBox {
+            height: 40px;
+            y: (parent.height - self.height)/2;
+
+            changed checked => {
+                root.checked-changed(cb.checked);
+            }
+        }
+
+        // Todo label
+        label := Text {
+            font-size: 16px;
+            font-weight: root.done ? 400 : 500;
+            font-italic: done;
+            overflow: elide;
+            color: black;
+            vertical-alignment: center;
+        }
+
+        // Remove button
+        remove-btn := ButtonIcon {
+            y: (parent.height - self.height)/2;
+            height: parent.height * 0.8;
+        }
+    }
+}
+
+export component TextField inherits Rectangle {
+    padding: 10px;
+
+    // Hint text for the todo input
+    in property <string> placeholder-text: "What plans do you have in mind?";
+
+    // Two way binding for the text input 'text'
+    in-out property <string> text <=> input.text;
+
+    // Clear input text callback
+    callback clear();
+
+    // Callback invoked to add task to the list view
+    callback add-task(string) -> bool;
+
+    // Clear the input text
+    clear => {
+        input.text = "";
+    }
+
+    HorizontalLayout {
+        padding-left: 10px;
+        padding-right: 10px;
+        spacing: 10px;
+
+        // TextInput with placeholder text
+        input := TextInput {
+            color: #444;
+            font-size: 16px;
+            font-weight: 400;
+            vertical-alignment: center;
+            padding-left: 16px;
+            padding-right: 16px;
+
+            accepted => {
+                // If adding task was successful, clear the input field
+                if( root.add-task(input.text) ) { root.clear(); }
+            }
+
+            // Placeholder text, hidden when parent has text
+            Text {
+                text: root.placeholder-text;
+                color: parent.color.with-alpha(0.5);
+                font-size: parent.font-size;
+                vertical-alignment: center;
+                visible: parent.text == "";
+                horizontal-alignment: left;
+                width: parent.width;
+                font-weight: parent.font-weight;
+                padding-left: parent.padding-left;
+                padding-right: parent.padding-right;
+            }
+
+        }
+
+        // Add task button
+        Rectangle {
+            height: 50px;
+            width: self.height;
+            y: (parent.height - self.height ) /2;
+            border-radius: ta.pressed ? self.height * 0.8 : ta.has-hover ? self.height/2 : 0px;
+            background: ta.has-hover || ta.pressed ? #eee : transparent;
+
+            // Animate both color and border properties
+            animate background { duration: 200ms; easing: ease-in-out; }
+            animate border-radius { duration: 200ms; easing: ease-in-out; }
+            animate border-width { duration: 200ms; easing: ease-in-out; }
+
+            // Mouse Area
+            ta := TouchArea {
+                clicked => {
+                    // If adding task was successful, clear the input field
+                    if( root.add-task(input.text) ) { root.clear(); }
+                }
+            }
+
+            // Arrow SVG icon
+            Path {
+                width: parent.width * 0.4;
+                height: self.width;
+                fill: #444;
+                commands: "M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z";
+            }            
+        }
+    }
+}
