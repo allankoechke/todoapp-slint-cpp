@@ -1,16 +1,18 @@
-# Slint C++ Template
+# Todo App in Slint C++
 
-A template for a C++ application that's using [Slint](https://slint.dev) for the user interface and CMake for the build system.
+A todo application in C++ that's using [Slint](https://slint.dev) for the user interface and CMake for the build system.
+
+![alt text](slint-todoapp.gif)
 
 ## About
 
-This template helps you get started developing a C++ application with Slint as toolkit
-for the user interface. It demonstrates the integration between the `.slint` UI markup and
-C++ code, how to trigger react to callbacks, get and set properties and use basic widgets.
+This is a learning sample for getting to know usage of ```.slint``` to develop lightweight yet robust GUIs. The code implements a Todo App that can track tasks allowing for adding new tasks, marking them as completed and removing them if not needed. 
+
+This is a sample with no complex logics!
 
 ## Prerequisites
 
-In order to use this template and build a C++ application, you need to install a few tools:
+In order to run this app and build a C++ application, you need to install a few tools:
 
   * **[cmake](https://cmake.org/download/)** (3.21 or newer)
   * A C++ compiler that supports C++ 20 
@@ -19,40 +21,37 @@ If your target environment is Linux or Windows on an x86-64 architecture, then y
 
 <https://slint.dev/docs/cpp/cmake.html#install-binary-packages>
 
-Alternatively, this template will automatically download the Slint sources and compile them. This option requires you to install Rust by following the [Rust Getting Started Guide](https://www.rust-lang.org/learn/get-started). Once this is done, you should have the ```rustc``` compiler and the ```cargo``` build system installed in your path.
+Alternatively, this app will automatically download the Slint sources and compile them. This option requires you to install Rust by following the [Rust Getting Started Guide](https://www.rust-lang.org/learn/get-started). Once this is done, you should have the ```rustc``` compiler and the ```cargo``` build system installed in your path.
 
 ## Usage
 
-1. Download and extract the [ZIP archive of this repository](https://github.com/slint-ui/slint-cpp-template/archive/refs/heads/main.zip).
-2. Rename the extracted directory and change into it:
+1. Git clone and ```cd``` to the project:
     ```
-    mv slint-cpp-template-main my-project
-    cd my-project
+    git clone https://github.com/allankoechke/todoapp-slint-cpp
+    cd todoapp-slint-cpp
     ```
-3. Configure with CMake
+2. Configure with CMake
    ```
    mkdir build
    cmake -B build
    ```
-4. Build with CMake
+3. Build with CMake
    ```
    cmake --build build
    ```
-5. Run the application binary
+4. Run the application binary
     * Linux/macOS:
         ```
-        ./build/my_application
+        ./build/todoapp-slint-cpp
         ```
     * Windows:
         ```
-        build\my_application.exe
+        build\todoapp-slint-cpp.exe
         ```
-
-We recommend using an IDE for development, along with our [LSP-based IDE integration for `.slint` files](https://github.com/slint-ui/slint/blob/master/tools/lsp/README.md). You can also load this project directly in [Visual Studio Code](https://code.visualstudio.com) and install our [Slint extension](https://marketplace.visualstudio.com/items?itemName=Slint.slint).
 
 ## Next Steps
 
-We hope that this template helps you get started and you enjoy exploring making user interfaces with Slint. To learn more
+To learn more
 about the Slint APIs and the `.slint` markup language check out our [online documentation](https://slint.dev/docs/cpp/).
 
-Don't forget to edit this README to replace it by yours
+Enjoy!
