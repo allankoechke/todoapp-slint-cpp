@@ -18,7 +18,8 @@ endif (NOT Slint_FOUND)
 
 add_executable(todo-app src/main.cpp)
 target_link_libraries(todo-app PRIVATE Slint::Slint)
-slint_target_sources(todo-app ui/app-window.slint)
+target_include_directories(todo-app PUBLIC build)
+slint_target_sources(todo-app ui/app_window.slint)
 # On Windows, copy the Slint DLL next to the application binary so that it's found.
 if (WIN32)
     add_custom_command(TARGET todo-app POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:todo-app> $<TARGET_FILE_DIR:todo-app> COMMAND_EXPAND_LISTS)
